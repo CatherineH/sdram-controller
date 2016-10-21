@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE EP4CE22F17C6
 set_global_assignment -name TOP_LEVEL_ENTITY toplevel
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 14.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "20:57:06  APRIL 05, 2015"
-set_global_assignment -name LAST_QUARTUS_VERSION 14.0
+set_global_assignment -name LAST_QUARTUS_VERSION 15.1.2
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -183,4 +183,8 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to LEDS[5]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to LEDS[4]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to LEDS[3]
 set_instance_assignment -name IO_STANDARD "3.3-V LVCMOS" -to LEDS[2]
+set_location_assignment PIN_A4 -to GP04
+set_location_assignment PIN_A2 -to GP02
+set_location_assignment PIN_B3 -to GP06
+set_location_assignment PIN_A3 -to GP03
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

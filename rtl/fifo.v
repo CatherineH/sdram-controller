@@ -18,14 +18,18 @@
  */
 module fifo (
   // Write side
-  wr_clk,
-  wr_data, 
+  //wr_clk,
+  clkin,
+  datain,
+  //wr_data, 
   wr,
   full,   // means don't write any more
   
   // Read side
-  rd_data,
-  rd_clk,
+  dataout,
+  //rd_data,
+  clkout,
+  //rd_clk,
   rd,
   empty_n, // also means we can read
   
@@ -33,21 +37,25 @@ module fifo (
 );
 
 parameter BUS_WIDTH = 16;
-
-input [BUS_WIDTH-1:0]  wr_data;
-input                  wr_clk;
+input [BUS_WIDTH-1:0]  datain;
+//input [BUS_WIDTH-1:0]  wr_data;
+input clkin;
+//input                  wr_clk;
 input                  wr;
 output                 full;      // Low-Means in side can write
 
-output [BUS_WIDTH-1:0] rd_data; 
-input                  rd_clk;
+output [BUS_WIDTH-1:0] dataout; 
+//output [BUS_WIDTH-1:0] rd_data; 
+input clkout;
+//input                  rd_clk;
 input                  rd;
 output                 empty_n;   // High-Means out side can read
 
 input                  rst_n;
 
 reg [BUS_WIDTH-1:0]    wr_data_r;
-reg [BUS_WIDTH-1:0]    rd_data;
+reg [BUS_WIDTH-1:0]    dataout;
+//reg [BUS_WIDTH-1:0]    rd_data;
 
 /* 
  * these reg sets span accross 2 clock domtains
@@ -67,7 +75,8 @@ reg                    rd_fifo_cnt;
 assign full = wr_fifo_cnt == 1'b1;
 assign empty_n = rd_fifo_cnt == 1'b1;
 
-always @ (posedge rd_clk)
+//always @ (posedge rd_clk)
+always @ (posedge clkout)
   if (~rst_n)
     begin
        rd_fifo_cnt <= 1'b0;
@@ -91,10 +100,12 @@ always @ (posedge rd_clk)
         rd_fifo_cnt <= 1'b1;
       
       if (wr_syn2)
-        rd_data <= wr_data_r;
+			dataout <= wr_data_r;
+        //rd_data <= wr_data_r;
     end
     
-always @ (posedge wr_clk)
+//always @ (posedge wr_clk)
+always @ (posedge clkin)
  if (~rst_n)
    begin
       wr_fifo_cnt <= 1'b0;
@@ -118,7 +129,8 @@ always @ (posedge wr_clk)
        
      // register write data on write
      if (wr)
-       wr_data_r <= wr_data;
+			wr_data_r <= datain;
+       //wr_data_r <= wr_data;
 
    end
 
