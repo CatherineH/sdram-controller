@@ -37,6 +37,7 @@ input  [3:0] dip;
 output [7:0] leds;
 
 output [HADDR_WIDTH-1:0]   haddr;
+reg [HADDR_WIDTH-1:0]   haddr_count;
 output [15:0]              wr_data;
 input  [15:0]              rd_data;
 input                      busy;
@@ -67,19 +68,26 @@ wire  dbl_clck_rst_n;
 assign dbl_clck_rst_n = rst_n & ~busy;
 
 // expand the dip data from 4 to 16 bits
-assign wr_data = {dip, dip, ~dip, ~dip};
+parameter VALUE = 42435;
+assign wr_data = VALUE;//{dip, dip, ~dip, ~dip};
 // toggle leds between sdram msb and lsb
-assign leds = led_cnt[LED_BLINK-1] ? rd_data_r[15:8] : rd_data_r[7:0]; 
+//assign leds = led_cnt[LED_BLINK-1] ? rd_data_r[15:8] : rd_data_r[7:0];
+assign leds = rd_data_r[15:8];//[7:0];//rd_data_r[7:0]; 
 
-assign haddr  = {(HADDR_WIDTH/4){dip}};
+assign haddr  = haddr_count;
 assign rd_ack = rd_ack_r;
+assign wr_enable = led_cnt[0];
+assign rd_enable = ~led_cnt[0];
 
 // handle led counter should just loop every half second
 always @ (posedge clk) 
  if (~rst_n) 
   led_cnt <= {LED_BLINK{1'b0}};
  else
-  led_cnt <= led_cnt + 1'b1;
+	begin
+		led_cnt <= led_cnt + 1'b1;
+		haddr_count <= haddr_count + 1'b1;
+	end
    
 
 always @ (posedge clk)
@@ -97,13 +105,15 @@ always @ (posedge clk)
    else 
      rd_data_r <= rd_data_r;
    end
-   
+
+
+/*   
 double_click #(.WAIT_WIDTH(DOUBlE_CLICK_WAIT)) double_clicki (
   .button  (~button_n),
   .single  (wr_enable),
   .double  (rd_enable),  
   .clk     (clk),
   .rst_n   (dbl_clck_rst_n)
-);
+);*/
 
 endmodule
